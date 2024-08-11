@@ -22,10 +22,8 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
-        // Mock setting authentication status
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('token', data.token);
-        // Redirect to homepage
         router.push('/');
       } else {
         const errorData = await response.json();
@@ -60,6 +58,7 @@ export default function Login() {
           />
         </label>
         <button type="submit" style={{ padding: '10px', backgroundColor: 'blue', color: 'white' }}>Login</button>
+        <button type="button" onClick={() => router.push('/register')} style={{ padding: '10px', backgroundColor: 'green', color: 'white', marginTop: '10px' }}>Register</button>
       </form>
     </div>
   );

@@ -18,10 +18,25 @@ class LoginData(BaseModel):
     username: str
     password: str
 
+class RegisterData(BaseModel):
+    username: str
+    password: str
+    email: str
+
+# Mock database
+users_db = {}
+
+@app.post("/register")
+def register(data: RegisterData):
+    if data.username in users_db:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    users_db[data.username] = {"password": data.password, "email": data.email}
+    return {"message": "Registration successful"}
+
 @app.post("/login")
 def login(data: LoginData):
-    # Mock validation (replace with actual validation logic)
-    if data.username == "test" and data.password == "test":
+    user = users_db.get(data.username)
+    if user and user["password"] == data.password:
         return {"message": "Login successful", "token": "mock-token"}
     else:
         raise HTTPException(status_code=401, detail="Invalid username or password")

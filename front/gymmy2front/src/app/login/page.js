@@ -8,16 +8,32 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (username === 'test' && password === 'test') {
-      // Mock setting authentication status
-      localStorage.setItem('isAuthenticated', 'true');
-      // Redirect to homepage
-      router.push('/');
-    } else {
-      alert('Invalid login credentials');
+    try {
+      const response = await fetch('http://172.17.0.2:80/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Mock setting authentication status
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('token', data.token);
+        // Redirect to homepage
+        router.push('/');
+      } else {
+        const errorData = await response.json();
+        alert(errorData.detail);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('An error occurred during login.');
     }
   };
 
